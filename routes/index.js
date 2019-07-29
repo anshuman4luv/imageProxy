@@ -5,6 +5,7 @@ var router = express.Router();
 /* GET home page. */
 router.get('/*', function(req, res, next) {
   var uri = req.url;
+	uri = uri.replace(/ /g,"%20");
   var host = req.query.host;
   console.log("The host is --->");
   console.log(host);
