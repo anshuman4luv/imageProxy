@@ -1,6 +1,7 @@
 var express = require('express');
 var http = require('https');
 var router = express.Router();
+var Jimp = require('jimp');
 
 /* GET home page. */
 router.get('/*', function(req, res, next) {
@@ -33,10 +34,32 @@ var request = http.request(options, function (response) {
     chunks.push(chunk);
   });
 
-  response.on("end", function () {
+ // response.on("end", function () {
+  //  var body = Buffer.concat(chunks);
+ //   res.end(body);
+ // });
+	  response.on("end", function () {
     var body = Buffer.concat(chunks);
-    res.end(body);
-  });
+	
+	Jimp.read(body)
+	  .then(image => {
+		image
+		.resize(382, 200);
+		
+		image.getBufferAsync(Jimp.AUTO).then(function(result) {
+			console.log('Result is ...');
+			console.log(result);
+			res.end(result);
+		});
+		
+	  })
+	  .catch(err => {
+		// Handle an exception.
+		res.end(JSON.stringify(err));
+	  });
+		//res.end(body);
+	  });
+	
  
 });
 
